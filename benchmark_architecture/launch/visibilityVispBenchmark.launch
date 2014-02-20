@@ -1,0 +1,12 @@
+<launch>
+	<arg name="scene" default="visionBenchmarkScene.xml" />
+	<arg name="bench" default="visionBenchmarkRecursive.xml" />
+	<node name="uwsimbenchmarks" pkg="uwsimbenchmarks" type="uwsimbenchmarks" args="--configfile $(arg scene) --benchmark $(arg bench)" output="screen" respawn="false"/>
+
+	<param name="changeTrackerOnUpdate" value="1" type="int"/>
+	<param name="tracker_type" value="TRACKER_SSD_FORWARD_ADDITIONAL" />
+	<param name="warp_type" value="WARP_HOMOGRAPHY_SL3" />
+	<node name="visptracker" pkg="benchmark_software_launcher" type="visptracker" output="screen" respawn="false" />
+
+</launch>
+

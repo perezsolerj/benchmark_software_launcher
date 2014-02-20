@@ -1,0 +1,9 @@
+<launch>
+	<arg name="scene" default="visionBenchmarkScene.xml" />
+	<arg name="bench" default="visionBenchmarkauto.xml" />
+	<node name="uwsimbenchmarks" pkg="uwsimbenchmarks" type="uwsimbenchmarks" args="--configfile $(arg scene) --benchmark $(arg bench)" output="screen" respawn="false"/>
+
+	<node name="esmtracker" pkg="benchmark_software_launcher" type="perceptionesmtracker" output="screen" respawn="false" />
+
+</launch>
+
