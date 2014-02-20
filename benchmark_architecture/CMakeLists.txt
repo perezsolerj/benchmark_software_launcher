@@ -7,6 +7,7 @@ find_package(catkin REQUIRED COMPONENTS
  nav_msgs
  esm_tracking
  image_transport
+ uwsimbenchmarks
 )
 
 find_package(VISP REQUIRED)
