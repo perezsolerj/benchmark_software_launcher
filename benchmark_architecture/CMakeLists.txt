@@ -8,6 +8,7 @@ find_package(catkin REQUIRED COMPONENTS
  esm_tracking
  image_transport
  uwsimbenchmarks
+ visp_bridge
 )
 
 find_package(VISP REQUIRED)
@@ -17,6 +18,7 @@ catkin_package(
     esm_tracking
     uwsimbenchmarks	
     image_transport
+    visp_bridge
   DEPENDS
     VISP
 )

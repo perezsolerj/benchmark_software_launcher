@@ -1,6 +1,7 @@
 #include <visp/vpDisplayGDI.h>
 #include <visp/vpDisplayX.h>
 #include <visp/vpImageIo.h>
+#include <visp_bridge/image.h>
 
 //Warp
 #include <visp/vpTemplateTrackerWarpAffine.h>
@@ -120,6 +121,7 @@ int main(int argc, char **argv)
   std::string autoInitService, startService;
   std::string tracker_type, warp_type;
   std::string benchinfo_topic;
+  std::string publishTracker;
   BenchmarkInfoCallback benchInfo;
 
   int tracker_number=0, warp_number=0;
@@ -147,6 +149,13 @@ int main(int argc, char **argv)
   nh.param("warp_type", warp_type, (std::string)"WARP_SRT");
   nh.param("benchinfo", benchinfo_topic, (std::string)"BenchmarkInfo");
   nh.param("changeTrackerOnUpdate", changeTrackerOnUpdate, 0);
+  nh.param("publishTracker", publishTracker, (std::string)"");
+
+
+  image_transport::ImageTransport it(nh);
+  image_transport::Publisher pub_tracker;
+  if(publishTracker!="")
+    pub_tracker = it.advertise(publishTracker, 1);
 
   //Types of tracker:
   std::vector<std::string> tracker_types;
@@ -173,9 +182,9 @@ int main(int argc, char **argv)
   g.open(Ic) ;
   g.acquire(Ic);
   vpImageConvert::convert(Ic,I);
-  vpDisplayX window(I);
-  vpDisplay::display(I);
-  vpDisplay::flush(I);
+  vpDisplayX window(Ic);
+  vpDisplay::display(Ic);
+  vpDisplay::flush(Ic);
 
   //initialize structures to publish centroid and corners
   std::vector<float> corners;
@@ -244,7 +253,7 @@ int main(int argc, char **argv)
     ros::spinOnce();
     g.acquire(Ic);
     vpImageConvert::convert(Ic,I);
-    vpDisplay::display(I);
+    vpDisplay::display(Ic);
 
   //Check if change tracker on update is needed
   if(changeTrackerOnUpdate && benchInfo.newIteration){
@@ -268,7 +277,7 @@ int main(int argc, char **argv)
     g.acquire(Ic);
     vpImageConvert::convert(Ic,I);
 
-    vpDisplay::display(I);
+    vpDisplay::display(Ic);
    
     //reinit tracker with starting information
     tracker->initFromPoints (I, vector);
@@ -291,7 +300,7 @@ int main(int argc, char **argv)
     g.acquire(Ic);
     vpImageConvert::convert(Ic,I);
 
-    vpDisplay::display(I);
+    vpDisplay::display(Ic);
     
     //Restart tracker
     vector.clear();
@@ -312,9 +321,9 @@ int main(int argc, char **argv)
     vpImagePoint centroid; 
     try{ //Check if tracking fails
      tracker->track(I);
-     tracker->display(I, vpColor::red);
+     tracker->display(Ic, vpColor::green);
 
-    if (vpDisplay::getClick(I, false))
+    if (vpDisplay::getClick(Ic, false))
       break;
 
     // Get the estimated parameters
@@ -354,8 +363,13 @@ int main(int argc, char **argv)
     array.data.push_back(zone_warped.getMaxy());
 
     pubcorners.publish(array);
+    vpDisplay::flush(Ic);
+    if(publishTracker!=""){
+      vpImage<vpRGBa> Ioverlay;
+      vpDisplay::getImage(Ic, Ioverlay) ;
+      pub_tracker.publish(visp_bridge::toSensorMsgsImage(Ioverlay));
+    }
 
-    vpDisplay::flush(I);
     vpTime::wait(40);
  }
 }

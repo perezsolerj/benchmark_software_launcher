@@ -19,6 +19,7 @@
   <build_depend>visp</build_depend>
   <build_depend>uwsimbenchmarks</build_depend>
   <build_depend>image_transport</build_depend>
+  <build_depend>visp_bridge</build_depend>
 
   <run_depend>boost</run_depend>
   <run_depend>nav_msgs</run_depend>
@@ -26,6 +27,7 @@
   <run_depend>visp</run_depend>
   <run_depend>uwsimbenchmarks</run_depend>
   <run_depend>image_transport</run_depend>
+  <run_depend>visp_bridge</run_depend>
 
 
     <export>

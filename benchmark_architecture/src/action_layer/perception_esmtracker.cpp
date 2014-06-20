@@ -6,6 +6,7 @@
 #include "std_msgs/Float32MultiArray.h"
 #include <std_srvs/Empty.h>
 #include "uwsimbenchmarks/GTpublish.h"
+#include <visp_bridge/image.h>
 
 //Waits for service call to calculate esm tracker initial parameters
 class InitService{
@@ -44,6 +45,7 @@ int main(int argc, char **argv){
   std::string corners_topic, centroid_topic;
   int reinit;
   std::string autoInitService, startService;
+  std::string publishTracker;
 
   ros::init(argc, argv, "esm_benchmarkTracking");
   ros::NodeHandle nh;
@@ -56,6 +58,14 @@ int main(int argc, char **argv){
   nh.param("reinit", reinit, 0);
   nh.param("autoinitservice", autoInitService, (std::string)"autoInit");
   nh.param("startservice", startService, (std::string)"startBench");
+  nh.param("publishTracker", publishTracker, (std::string)"");
+
+
+  image_transport::ImageTransport it(nh);
+  image_transport::Publisher pub_tracker;
+  if(publishTracker!="")
+    pub_tracker = it.advertise(publishTracker, 1);
+
 
   vpImage<vpRGBa> Ic; // Color image
 
@@ -142,6 +152,11 @@ int main(int argc, char **argv){
     pubcorners.publish(array);
 
     vpDisplay::flush(Ic);
+    if(publishTracker!=""){
+      vpImage<vpRGBa> Ioverlay;
+      vpDisplay::getImage(Ic, Ioverlay) ;
+      pub_tracker.publish(visp_bridge::toSensorMsgsImage(Ioverlay));
+    }
   }
 
 }
