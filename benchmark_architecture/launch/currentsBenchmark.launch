@@ -1,0 +1,11 @@
+<launch>
+	<arg name="scene" default="trackingScene.xml" />
+	<arg name="bench" default="trackingBenchmarkauto.xml" />
+	<node name="uwsimbenchmarks" pkg="uwsimbenchmarks" type="uwsimbenchmarks" args="--configfile $(arg scene) --benchmark $(arg bench)" output="screen" respawn="false"/>
+
+        <param name="reinit" value="1"  type="int"/>
+	<node name="esmtracker" pkg="benchmark_software_launcher" type="perceptionesmtracker" output="screen" respawn="false" />
+	<node name="stationKeeping" pkg="benchmark_software_launcher" type="visualStationKeeping" output="screen" respawn="false" />
+	<node name="PIcontroller" pkg="benchmark_software_launcher" type="navigatorPIcontroller" output="screen" respawn="false" />
+
+</launch>

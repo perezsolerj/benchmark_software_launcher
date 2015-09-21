@@ -44,15 +44,27 @@ target_link_libraries(esmtracker ${catkin_LIBRARIES})
 # Building executables
 add_executable(perceptionesmtracker src/action_layer/perception_esmtracker.cpp)
 add_executable(visptracker src/action_layer/visp_tracker.cpp)
+add_executable(navigatorPIcontroller src/action_layer/navigatorPIcontroller.cpp)
+add_executable(navigatorPcontroller src/action_layer/navigatorPcontroller.cpp)
+add_executable(vehicleThrusterAllocator src/control_layer/vehicleThrusterAllocator.cpp)
+add_executable(visualStationKeeping src/task_layer/visualStationKeeping.cpp)
 
 TARGET_LINK_LIBRARIES(perceptionesmtracker  ${catkin_LIBRARIES} ${VISP_LIBRARIES} esmtracker)
 TARGET_LINK_LIBRARIES(visptracker  ${catkin_LIBRARIES} ${VISP_LIBRARIES} esmtracker)
+TARGET_LINK_LIBRARIES(navigatorPIcontroller  ${catkin_LIBRARIES})
+TARGET_LINK_LIBRARIES(navigatorPcontroller  ${catkin_LIBRARIES})
+TARGET_LINK_LIBRARIES(vehicleThrusterAllocator  ${catkin_LIBRARIES})
+TARGET_LINK_LIBRARIES(visualStationKeeping  ${catkin_LIBRARIES})
 
 # Install
 install(
   TARGETS
     perceptionesmtracker
     visptracker
+    navigatorPIcontroller
+    navigatorPcontroller
+    vehicleThrusterAllocator
+    visualStationKeeping
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}

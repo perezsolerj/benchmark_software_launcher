@@ -1,0 +1,19 @@
+<launch>
+	<arg name="scene" default="dynamicsTrackingScene.xml" />
+	<arg name="bench" default="trackingBenchmarkDynamics.xml" />
+	<node name="uwsimbenchmarks" pkg="uwsimbenchmarks" type="uwsimbenchmarks" args="--configfile $(arg scene) --benchmark $(arg bench)" output="screen" respawn="false"/>
+
+	<include file="$(find underwater_vehicle_dynamics)/launch/dynamics.launch">
+	   <arg name="namespace" value="g500" />	
+	   <arg name="params" value="$(find underwater_vehicle_dynamics)/config/dynamics_g500.yaml" />
+   	</include>
+	<rosparam param="/g500/dynamics/initial_pose">[3,1.5,1.5,0,0,1.57]</rosparam>
+	<rosparam param="/g500/dynamics/external_force_topic">currentForce</rosparam>
+
+        <param name="reinit" value="1"  type="int"/>
+	<node name="esmtracker" pkg="benchmark_software_launcher" type="perceptionesmtracker" output="screen" respawn="false" />
+	<node name="stationKeeping" pkg="benchmark_software_launcher" type="visualStationKeeping" output="screen" respawn="false" />
+	<node name="PIcontroller" pkg="benchmark_software_launcher" type="navigatorPIcontroller" output="screen" respawn="false" />
+	<node name="thrusterAllocator" pkg="benchmark_software_launcher" type="vehicleThrusterAllocator" output="screen" respawn="false" />
+
+</launch>
